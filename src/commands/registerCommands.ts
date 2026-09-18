@@ -380,13 +380,15 @@ export function registerCommands(
     })
   );
 
-  // 7. Add File to Selection (Explorer context menu)
+  // 7. Add File to Selection (Explorer context menu or Workspace tree action)
   context.subscriptions.push(
-    vscode.commands.registerCommand('ctxcopy.addFileToSelection', async (first?: vscode.Uri, all?: vscode.Uri[]) => {
+    vscode.commands.registerCommand('ctxcopy.addFileToSelection', async (first?: WorkspaceFileItem | SelectedFileTreeItem | vscode.Uri, all?: vscode.Uri[]) => {
       let targetUris: vscode.Uri[] = [];
 
       if (all && all.length > 0) {
         targetUris = all;
+      } else if (first instanceof WorkspaceFileItem || first instanceof SelectedFileTreeItem) {
+        targetUris = [first.fileUri];
       } else if (first instanceof vscode.Uri) {
         targetUris = [first];
       } else if (vscode.window.activeTextEditor) {

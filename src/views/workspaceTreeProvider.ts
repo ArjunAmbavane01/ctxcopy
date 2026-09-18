@@ -55,14 +55,13 @@ export class WorkspaceFileItem extends vscode.TreeItem {
     this.resourceUri = fileUri;
     const relPath = getRelativePath(fileUri);
 
+    // Keep description empty so the only indicator is the single green checkmark badge at the end
+    this.description = '';
+
     if (isSelected) {
-      this.iconPath = new vscode.ThemeIcon('check', new vscode.ThemeColor('charts.green'));
-      this.description = '✓ Selected';
       this.contextValue = 'workspaceFileSelected';
       this.tooltip = `${relPath} (Selected in CtxCopy)`;
     } else {
-      this.iconPath = vscode.ThemeIcon.File;
-      this.description = '';
       this.contextValue = 'workspaceFileUnselected';
       this.tooltip = relPath;
     }

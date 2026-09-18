@@ -48,15 +48,15 @@ convex/tasks.ts
    - Right-click any file or folder in the VS Code File Explorer and select **Add to CtxCopy**.
    - With an active file open in the editor, run **CtxCopy: Add Current File** (`Ctrl+Alt+A` / `Cmd+Alt+A`).
 3. View your staged files in the CtxCopy sidebar list.
-4. Click **Copy Selected Files** in the view header (`Ctrl+Alt+Shift+C` / `Cmd+Alt+Shift+C`) to copy all staged files.
-5. Click **Clear Selection** (`Ctrl+Alt+Shift+X` / `Cmd+Alt+Shift+X`) to reset the list.
+4. Click **Copy Selected Files** in the view header (`Alt+Shift+C` / `Cmd+Alt+Shift+C`) to copy all staged files.
+5. Click **Clear Selection** (`Alt+Shift+X` / `Cmd+Alt+Shift+X`) to reset the list.
 
-Files currently staged in CtxCopy are decorated with a `✓` indicator in the VS Code File Explorer.
+Files currently staged in CtxCopy are decorated with a green `✓` indicator in the VS Code File Explorer and Workspace Explorer.
 
 ### 2. Quick Single-File Copy
 
 - **Explorer Context Menu**: Right-click any file in the VS Code Explorer and click **Copy with CtxCopy**.
-- **Editor Action / Shortcut**: Press `Ctrl+Alt+C` (`Cmd+Alt+C` on macOS) while editing any file.
+- **Editor Action / Shortcut**: Press `Alt+C` (`Cmd+Alt+C` on macOS) while editing any file.
 
 ---
 
@@ -64,10 +64,10 @@ Files currently staged in CtxCopy are decorated with a `✓` indicator in the VS
 
 | Command | Title | Default Shortcut |
 | :--- | :--- | :--- |
-| `ctxcopy.copyCurrentFile` | CtxCopy: Copy Current File | `Ctrl+Alt+C` (`Cmd+Alt+C`) |
-| `ctxcopy.addCurrentFile` | CtxCopy: Add Current File | `Ctrl+Alt+A` (`Cmd+Alt+A`) |
-| `ctxcopy.copySelectedFiles` | CtxCopy: Copy Selected Files | `Ctrl+Alt+Shift+C` (`Cmd+Alt+Shift+C`) |
-| `ctxcopy.clearSelection` | CtxCopy: Clear Selection | `Ctrl+Alt+Shift+X` (`Cmd+Alt+Shift+X`) |
+| `ctxcopy.toggleCurrentFile` | CtxCopy: Toggle Current File Selection | `Alt+A` (`Cmd+Alt+A`) |
+| `ctxcopy.copyCurrentFile` | CtxCopy: Copy Current File | `Alt+C` (`Cmd+Alt+C`) |
+| `ctxcopy.copySelectedFiles` | CtxCopy: Copy Selected Files | `Alt+Shift+C` (`Cmd+Alt+Shift+C`) |
+| `ctxcopy.clearSelection` | CtxCopy: Clear Selection | `Alt+Shift+X` (`Cmd+Alt+Shift+X`) |
 | `ctxcopy.addFilesQuickPick` | CtxCopy: Add Files to Selection... | - |
 | `ctxcopy.copyFileDirect` | Copy with CtxCopy | - |
 | `ctxcopy.addFileToSelection` | Add to CtxCopy | - |

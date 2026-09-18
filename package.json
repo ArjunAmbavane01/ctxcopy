@@ -52,7 +52,7 @@
     "viewsWelcome": [
       {
         "view": "ctxcopy.selectedFilesView",
-        "contents": "No files selected.\nSelect files using the checkboxes in the Workspace Explorer below, or right-click files in VS Code Explorer.\n[Add Files...](command:ctxcopy.addFilesQuickPick)\n[Toggle Current File](command:ctxcopy.toggleCurrentFile)",
+        "contents": "No files selected.\nSelect files in the Workspace Explorer below, or right-click files in VS Code Explorer.\n[Add Files...](command:ctxcopy.addFilesQuickPick)\n[Add Current File](command:ctxcopy.addCurrentFile)",
         "when": "ctxcopy.selectedCount == 0"
       }
     ],
@@ -92,7 +92,7 @@
       },
       {
         "command": "ctxcopy.removeFileFromSelection",
-        "title": "Remove from Selection",
+        "title": "Remove",
         "category": "CtxCopy",
         "icon": "$(close)"
       },
@@ -104,24 +104,24 @@
       },
       {
         "command": "ctxcopy.addFileToSelection",
-        "title": "Add to CtxCopy",
+        "title": "Add",
         "category": "CtxCopy",
         "icon": "$(add)"
       },
       {
         "command": "ctxcopy.toggleWorkspaceItem",
-        "title": "Toggle CtxCopy Selection",
+        "title": "Toggle",
         "category": "CtxCopy"
       },
       {
         "command": "ctxcopy.addFolderToSelection",
-        "title": "Add Folder to CtxCopy",
+        "title": "Add Folder",
         "category": "CtxCopy",
         "icon": "$(add)"
       },
       {
         "command": "ctxcopy.removeFolderFromSelection",
-        "title": "Remove Folder from CtxCopy",
+        "title": "Remove Folder",
         "category": "CtxCopy",
         "icon": "$(close)"
       },
@@ -167,16 +167,16 @@
           "group": "inline@2"
         },
         {
-          "command": "ctxcopy.toggleWorkspaceItem",
+          "command": "ctxcopy.addFileToSelection",
           "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceFileUnselected",
           "group": "inline@1",
           "icon": "$(add)"
         },
         {
-          "command": "ctxcopy.toggleWorkspaceItem",
+          "command": "ctxcopy.removeFileFromSelection",
           "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceFileSelected",
           "group": "inline@1",
-          "icon": "$(check)"
+          "icon": "$(close)"
         },
         {
           "command": "ctxcopy.addFolderToSelection",
@@ -223,24 +223,24 @@
     "keybindings": [
       {
         "command": "ctxcopy.copyCurrentFile",
-        "key": "ctrl+alt+c",
+        "key": "alt+c",
         "mac": "cmd+alt+c",
         "when": "editorFocus || activeEditor || filesExplorerFocus"
       },
       {
         "command": "ctxcopy.toggleCurrentFile",
-        "key": "ctrl+alt+a",
+        "key": "alt+a",
         "mac": "cmd+alt+a",
         "when": "editorFocus || activeEditor || filesExplorerFocus"
       },
       {
         "command": "ctxcopy.copySelectedFiles",
-        "key": "ctrl+alt+shift+c",
+        "key": "alt+shift+c",
         "mac": "cmd+alt+shift+c"
       },
       {
         "command": "ctxcopy.clearSelection",
-        "key": "ctrl+alt+shift+x",
+        "key": "alt+shift+x",
         "mac": "cmd+alt+shift+x"
       }
     ],

@@ -26,7 +26,7 @@ export class CtxCopyFileDecorationProvider implements vscode.FileDecorationProvi
       return {
         badge: '✓',
         tooltip: 'Selected in CtxCopy',
-        color: new vscode.ThemeColor('charts.blue')
+        color: new vscode.ThemeColor('charts.green')
       };
     }
     return undefined;
