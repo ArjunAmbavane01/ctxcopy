@@ -41,13 +41,18 @@
           "id": "ctxcopy.selectedFilesView",
           "name": "Selected Files",
           "contextualTitle": "CtxCopy"
+        },
+        {
+          "id": "ctxcopy.workspaceExplorerView",
+          "name": "Workspace Explorer",
+          "contextualTitle": "CtxCopy"
         }
       ]
     },
     "viewsWelcome": [
       {
         "view": "ctxcopy.selectedFilesView",
-        "contents": "No files selected.\nAdd files to your context selection from the Explorer context menu, editor, or using the quick pick.\n[Add Files...](command:ctxcopy.addFilesQuickPick)\n[Add Current File](command:ctxcopy.addCurrentFile)",
+        "contents": "No files selected.\nSelect files using the checkboxes in the Workspace Explorer below, or right-click files in VS Code Explorer.\n[Add Files...](command:ctxcopy.addFilesQuickPick)\n[Toggle Current File](command:ctxcopy.toggleCurrentFile)",
         "when": "ctxcopy.selectedCount == 0"
       }
     ],
@@ -55,6 +60,11 @@
       {
         "command": "ctxcopy.copyCurrentFile",
         "title": "CtxCopy: Copy Current File",
+        "category": "CtxCopy"
+      },
+      {
+        "command": "ctxcopy.toggleCurrentFile",
+        "title": "CtxCopy: Toggle Current File Selection",
         "category": "CtxCopy"
       },
       {
@@ -66,7 +76,7 @@
         "command": "ctxcopy.copySelectedFiles",
         "title": "CtxCopy: Copy Selected Files",
         "category": "CtxCopy",
-        "icon": "$(clippy)"
+        "icon": "$(copy)"
       },
       {
         "command": "ctxcopy.clearSelection",
@@ -90,13 +100,36 @@
         "command": "ctxcopy.copyFileDirect",
         "title": "Copy with CtxCopy",
         "category": "CtxCopy",
-        "icon": "$(clippy)"
+        "icon": "$(copy)"
       },
       {
         "command": "ctxcopy.addFileToSelection",
         "title": "Add to CtxCopy",
         "category": "CtxCopy",
         "icon": "$(add)"
+      },
+      {
+        "command": "ctxcopy.toggleWorkspaceItem",
+        "title": "Toggle CtxCopy Selection",
+        "category": "CtxCopy"
+      },
+      {
+        "command": "ctxcopy.addFolderToSelection",
+        "title": "Add Folder to CtxCopy",
+        "category": "CtxCopy",
+        "icon": "$(add)"
+      },
+      {
+        "command": "ctxcopy.removeFolderFromSelection",
+        "title": "Remove Folder from CtxCopy",
+        "category": "CtxCopy",
+        "icon": "$(close)"
+      },
+      {
+        "command": "ctxcopy.refreshWorkspaceTree",
+        "title": "Refresh",
+        "category": "CtxCopy",
+        "icon": "$(refresh)"
       }
     ],
     "menus": {
@@ -115,6 +148,11 @@
           "command": "ctxcopy.clearSelection",
           "when": "view == ctxcopy.selectedFilesView && ctxcopy.selectedCount > 0",
           "group": "navigation@3"
+        },
+        {
+          "command": "ctxcopy.refreshWorkspaceTree",
+          "when": "view == ctxcopy.workspaceExplorerView",
+          "group": "navigation@1"
         }
       ],
       "view/item/context": [
@@ -127,6 +165,30 @@
           "command": "ctxcopy.removeFileFromSelection",
           "when": "view == ctxcopy.selectedFilesView && viewItem == selectedFile",
           "group": "inline@2"
+        },
+        {
+          "command": "ctxcopy.toggleWorkspaceItem",
+          "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceFileUnselected",
+          "group": "inline@1",
+          "icon": "$(add)"
+        },
+        {
+          "command": "ctxcopy.toggleWorkspaceItem",
+          "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceFileSelected",
+          "group": "inline@1",
+          "icon": "$(check)"
+        },
+        {
+          "command": "ctxcopy.addFolderToSelection",
+          "when": "view == ctxcopy.workspaceExplorerView && (viewItem == workspaceDirectoryEmpty || viewItem == workspaceDirectoryHasSelections)",
+          "group": "inline@1",
+          "icon": "$(add)"
+        },
+        {
+          "command": "ctxcopy.removeFolderFromSelection",
+          "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceDirectoryHasSelections",
+          "group": "inline@2",
+          "icon": "$(close)"
         }
       ],
       "explorer/context": [
@@ -135,8 +197,12 @@
           "group": "7_modification@1"
         },
         {
-          "command": "ctxcopy.addFileToSelection",
+          "command": "ctxcopy.toggleCurrentFile",
           "group": "7_modification@2"
+        },
+        {
+          "command": "ctxcopy.addFileToSelection",
+          "group": "7_modification@3"
         }
       ],
       "editor/context": [
@@ -145,15 +211,12 @@
           "group": "7_modification@1"
         },
         {
-          "command": "ctxcopy.addCurrentFile",
+          "command": "ctxcopy.toggleCurrentFile",
           "group": "7_modification@2"
-        }
-      ],
-      "editor/title": [
+        },
         {
-          "command": "ctxcopy.copyCurrentFile",
-          "group": "navigation@9",
-          "icon": "$(clippy)"
+          "command": "ctxcopy.addCurrentFile",
+          "group": "7_modification@3"
         }
       ]
     },
@@ -162,13 +225,13 @@
         "command": "ctxcopy.copyCurrentFile",
         "key": "ctrl+alt+c",
         "mac": "cmd+alt+c",
-        "when": "editorTextFocus"
+        "when": "editorFocus || activeEditor || filesExplorerFocus"
       },
       {
-        "command": "ctxcopy.addCurrentFile",
+        "command": "ctxcopy.toggleCurrentFile",
         "key": "ctrl+alt+a",
         "mac": "cmd+alt+a",
-        "when": "editorTextFocus"
+        "when": "editorFocus || activeEditor || filesExplorerFocus"
       },
       {
         "command": "ctxcopy.copySelectedFiles",

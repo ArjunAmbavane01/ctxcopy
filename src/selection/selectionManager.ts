@@ -54,9 +54,13 @@ export class SelectionManager implements vscode.Disposable {
 
   /**
    * Normalizes Uri key for cross-platform consistency.
+   * On Windows, paths are case-insensitive and drive letters can vary in casing.
    */
   private getKey(uri: vscode.Uri): string {
-    return uri.toString();
+    if (uri.scheme === 'file') {
+      return `file://${uri.fsPath.toLowerCase().replace(/\\/g, '/')}`;
+    }
+    return uri.toString().toLowerCase();
   }
 
   /**
@@ -64,6 +68,40 @@ export class SelectionManager implements vscode.Disposable {
    */
   public has(uri: vscode.Uri): boolean {
     return this._selectedMap.has(this.getKey(uri));
+  }
+
+  /**
+   * Count how many selected files are inside a given folder directory.
+   */
+  public getSelectedCountInFolder(folderUri: vscode.Uri): number {
+    const folderKey = this.getKey(folderUri) + '/';
+    let count = 0;
+    for (const key of this._selectedMap.keys()) {
+      if (key.startsWith(folderKey)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Remove all selected files under a given directory.
+   */
+  public removeFolder(folderUri: vscode.Uri): number {
+    const folderKey = this.getKey(folderUri) + '/';
+    const toDelete: string[] = [];
+    for (const key of this._selectedMap.keys()) {
+      if (key.startsWith(folderKey)) {
+        toDelete.push(key);
+      }
+    }
+    for (const k of toDelete) {
+      this._selectedMap.delete(k);
+    }
+    if (toDelete.length > 0) {
+      this.notifyChange();
+    }
+    return toDelete.length;
   }
 
   /**

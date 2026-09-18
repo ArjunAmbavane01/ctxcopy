@@ -5,6 +5,7 @@ import { SelectionManager } from '../selection/selectionManager';
 import { readFileAsText, FileReadSuccess, getRelativePath } from '../utils/fileReader';
 import { findSecretFiles } from '../utils/secrets';
 import { SelectedFileTreeItem } from '../views/selectedFilesTreeProvider';
+import { WorkspaceFileItem, WorkspaceFolderItem, WorkspaceTreeItem } from '../views/workspaceTreeProvider';
 
 interface CtxCopyConfig {
   warnOnSecrets: boolean;
@@ -154,24 +155,119 @@ export function registerCommands(
     })
   );
 
-  // 2. Add Current File
+  // 2. Toggle Current File (or Explorer Selection)
   context.subscriptions.push(
-    vscode.commands.registerCommand('ctxcopy.addCurrentFile', () => {
-      const activeEditor = vscode.window.activeTextEditor;
-      if (!activeEditor || !activeEditor.document || activeEditor.document.isUntitled) {
-        vscode.window.showInformationMessage('CtxCopy: No active workspace file to add.');
+    vscode.commands.registerCommand('ctxcopy.toggleCurrentFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+      let targetUris: vscode.Uri[] = [];
+
+      if (uris && uris.length > 0) {
+        targetUris = uris;
+      } else if (uri instanceof vscode.Uri) {
+        targetUris = [uri];
+      } else if (vscode.window.activeTextEditor && !vscode.window.activeTextEditor.document.isUntitled) {
+        targetUris = [vscode.window.activeTextEditor.document.uri];
+      }
+
+      if (targetUris.length === 0) {
+        vscode.window.showInformationMessage('CtxCopy: No file selected or open in editor to toggle.');
         return;
       }
 
-      const uri = activeEditor.document.uri;
-      const fileName = path.basename(uri.fsPath);
-      const added = selectionManager.add(uri);
+      if (targetUris.length === 1) {
+        const target = targetUris[0];
+        try {
+          const stat = await vscode.workspace.fs.stat(target);
+          if (stat.type & vscode.FileType.Directory) {
+            const folderFiles = await resolveUrisToFiles([target]);
+            const countInFolder = selectionManager.getSelectedCountInFolder(target);
+            if (countInFolder > 0) {
+              const removed = selectionManager.removeFolder(target);
+              vscode.window.showInformationMessage(`Removed ${removed} file(s) in folder from CtxCopy (${selectionManager.getCount()} selected)`);
+            } else {
+              const added = selectionManager.add(folderFiles);
+              vscode.window.showInformationMessage(`Added ${added} file(s) in folder to CtxCopy (${selectionManager.getCount()} selected)`);
+            }
+            return;
+          }
+        } catch {
+          // Proceed as single file
+        }
 
-      if (added > 0) {
-        vscode.window.showInformationMessage(`Added ${fileName} to CtxCopy (${selectionManager.getCount()} selected)`);
+        const fileName = path.basename(target.fsPath);
+        const isSelected = selectionManager.toggle(target);
+        const total = selectionManager.getCount();
+        if (isSelected) {
+          vscode.window.showInformationMessage(`Added "${fileName}" to CtxCopy (${total} selected)`);
+        } else {
+          vscode.window.showInformationMessage(`Removed "${fileName}" from CtxCopy (${total} selected)`);
+        }
       } else {
-        vscode.window.showInformationMessage(`${fileName} is already in CtxCopy selection.`);
+        const files = await resolveUrisToFiles(targetUris);
+        const allSelected = files.length > 0 && files.every(f => selectionManager.has(f));
+        if (allSelected) {
+          files.forEach(f => selectionManager.remove(f));
+          vscode.window.showInformationMessage(`Removed ${files.length} files from CtxCopy (${selectionManager.getCount()} selected)`);
+        } else {
+          const added = selectionManager.add(files);
+          vscode.window.showInformationMessage(`Added ${added} files to CtxCopy (${selectionManager.getCount()} selected)`);
+        }
       }
+    })
+  );
+
+  // 2b. Add Current File (also toggles if already added)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('ctxcopy.addCurrentFile', () => {
+      vscode.commands.executeCommand('ctxcopy.toggleCurrentFile');
+    })
+  );
+
+  // 2c. Toggle Item in Workspace Tree View
+  context.subscriptions.push(
+    vscode.commands.registerCommand('ctxcopy.toggleWorkspaceItem', async (item?: WorkspaceTreeItem | vscode.Uri) => {
+      if (!item) {
+        return;
+      }
+      if (item instanceof WorkspaceFileItem) {
+        selectionManager.toggle(item.fileUri);
+      } else if (item instanceof WorkspaceFolderItem) {
+        const count = selectionManager.getSelectedCountInFolder(item.folderUri);
+        if (count > 0) {
+          selectionManager.removeFolder(item.folderUri);
+        } else {
+          const files = await resolveUrisToFiles([item.folderUri]);
+          selectionManager.add(files);
+        }
+      } else if (item instanceof vscode.Uri) {
+        selectionManager.toggle(item);
+      }
+    })
+  );
+
+  // 2d. Add Folder to Selection
+  context.subscriptions.push(
+    vscode.commands.registerCommand('ctxcopy.addFolderToSelection', async (item?: WorkspaceFolderItem | vscode.Uri) => {
+      const folderUri = item instanceof WorkspaceFolderItem ? item.folderUri : item;
+      if (!folderUri) {
+        return;
+      }
+      const files = await resolveUrisToFiles([folderUri]);
+      const added = selectionManager.add(files);
+      const folderName = path.basename(folderUri.fsPath);
+      vscode.window.showInformationMessage(`Added ${added} file(s) in "${folderName}" to CtxCopy (${selectionManager.getCount()} selected)`);
+    })
+  );
+
+  // 2e. Remove Folder from Selection
+  context.subscriptions.push(
+    vscode.commands.registerCommand('ctxcopy.removeFolderFromSelection', (item?: WorkspaceFolderItem | vscode.Uri) => {
+      const folderUri = item instanceof WorkspaceFolderItem ? item.folderUri : item;
+      if (!folderUri) {
+        return;
+      }
+      const removed = selectionManager.removeFolder(folderUri);
+      const folderName = path.basename(folderUri.fsPath);
+      vscode.window.showInformationMessage(`Removed ${removed} file(s) in "${folderName}" from CtxCopy (${selectionManager.getCount()} selected)`);
     })
   );
 
@@ -220,12 +316,19 @@ export function registerCommands(
 
   // 5. Remove File From Selection (TreeView inline action or context menu)
   context.subscriptions.push(
-    vscode.commands.registerCommand('ctxcopy.removeFileFromSelection', (item?: SelectedFileTreeItem | vscode.Uri) => {
+    vscode.commands.registerCommand('ctxcopy.removeFileFromSelection', (item?: SelectedFileTreeItem | WorkspaceFileItem | vscode.Uri) => {
       if (!item) {
         return;
       }
-      const uri = item instanceof SelectedFileTreeItem ? item.fileUri : item;
-      selectionManager.remove(uri);
+      let uri: vscode.Uri | undefined;
+      if (item instanceof SelectedFileTreeItem || item instanceof WorkspaceFileItem) {
+        uri = item.fileUri;
+      } else if (item instanceof vscode.Uri) {
+        uri = item;
+      }
+      if (uri) {
+        selectionManager.remove(uri);
+      }
     })
   );
 
