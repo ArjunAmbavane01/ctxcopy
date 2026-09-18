@@ -1,0 +1,230 @@
+{
+  "name": "ctxcopy",
+  "displayName": "CtxCopy",
+  "description": "Select workspace files and copy their formatted contents to clipboard for LLMs and chatbots.",
+  "version": "0.1.0",
+  "publisher": "ctxcopy",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "clipboard",
+    "llm",
+    "chatgpt",
+    "claude",
+    "gemini",
+    "context",
+    "prompt"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ctxcopy-container",
+          "title": "CtxCopy",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ctxcopy-container": [
+        {
+          "id": "ctxcopy.selectedFilesView",
+          "name": "Selected Files",
+          "contextualTitle": "CtxCopy"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "ctxcopy.selectedFilesView",
+        "contents": "No files selected.\nAdd files to your context selection from the Explorer context menu, editor, or using the quick pick.\n[Add Files...](command:ctxcopy.addFilesQuickPick)\n[Add Current File](command:ctxcopy.addCurrentFile)",
+        "when": "ctxcopy.selectedCount == 0"
+      }
+    ],
+    "commands": [
+      {
+        "command": "ctxcopy.copyCurrentFile",
+        "title": "CtxCopy: Copy Current File",
+        "category": "CtxCopy"
+      },
+      {
+        "command": "ctxcopy.addCurrentFile",
+        "title": "CtxCopy: Add Current File",
+        "category": "CtxCopy"
+      },
+      {
+        "command": "ctxcopy.copySelectedFiles",
+        "title": "CtxCopy: Copy Selected Files",
+        "category": "CtxCopy",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "ctxcopy.clearSelection",
+        "title": "CtxCopy: Clear Selection",
+        "category": "CtxCopy",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "ctxcopy.addFilesQuickPick",
+        "title": "CtxCopy: Add Files to Selection...",
+        "category": "CtxCopy",
+        "icon": "$(add)"
+      },
+      {
+        "command": "ctxcopy.removeFileFromSelection",
+        "title": "Remove from Selection",
+        "category": "CtxCopy",
+        "icon": "$(close)"
+      },
+      {
+        "command": "ctxcopy.copyFileDirect",
+        "title": "Copy with CtxCopy",
+        "category": "CtxCopy",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "ctxcopy.addFileToSelection",
+        "title": "Add to CtxCopy",
+        "category": "CtxCopy",
+        "icon": "$(add)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "ctxcopy.copySelectedFiles",
+          "when": "view == ctxcopy.selectedFilesView && ctxcopy.selectedCount > 0",
+          "group": "navigation@1"
+        },
+        {
+          "command": "ctxcopy.addFilesQuickPick",
+          "when": "view == ctxcopy.selectedFilesView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "ctxcopy.clearSelection",
+          "when": "view == ctxcopy.selectedFilesView && ctxcopy.selectedCount > 0",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "ctxcopy.copyFileDirect",
+          "when": "view == ctxcopy.selectedFilesView && viewItem == selectedFile",
+          "group": "inline@1"
+        },
+        {
+          "command": "ctxcopy.removeFileFromSelection",
+          "when": "view == ctxcopy.selectedFilesView && viewItem == selectedFile",
+          "group": "inline@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "ctxcopy.copyFileDirect",
+          "group": "7_modification@1"
+        },
+        {
+          "command": "ctxcopy.addFileToSelection",
+          "group": "7_modification@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "ctxcopy.copyCurrentFile",
+          "group": "7_modification@1"
+        },
+        {
+          "command": "ctxcopy.addCurrentFile",
+          "group": "7_modification@2"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "ctxcopy.copyCurrentFile",
+          "group": "navigation@9",
+          "icon": "$(clippy)"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "ctxcopy.copyCurrentFile",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "ctxcopy.addCurrentFile",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "ctxcopy.copySelectedFiles",
+        "key": "ctrl+alt+shift+c",
+        "mac": "cmd+alt+shift+c"
+      },
+      {
+        "command": "ctxcopy.clearSelection",
+        "key": "ctrl+alt+shift+x",
+        "mac": "cmd+alt+shift+x"
+      }
+    ],
+    "configuration": {
+      "title": "CtxCopy",
+      "properties": {
+        "ctxcopy.warnOnSecrets": {
+          "type": "boolean",
+          "default": true,
+          "description": "Warn before copying potential secret or sensitive files (e.g., .env files, private keys, certificates)."
+        },
+        "ctxcopy.maxFileSizeKB": {
+          "type": "number",
+          "default": 2048,
+          "description": "Maximum file size in kilobytes (KB) to read without showing a warning prompt."
+        },
+        "ctxcopy.includeLineNumbers": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prefix lines with line numbers in copied output."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "build": "node esbuild.js --production",
+    "bundle:dev": "node esbuild.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "pretest": "npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js",
+    "test:unit": "npm run compile && node ./out/test/unitRunner.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.17.19",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^8.57.1",
+    "mocha": "^10.8.2",
+    "typescript": "^5.7.3"
+  }
+}
