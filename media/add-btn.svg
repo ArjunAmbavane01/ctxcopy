@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <defs>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <filter id="btnShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="1" stdDeviation="0.4" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <!-- 3D Bevel Base -->
+  <rect x="1.5" y="2" width="13" height="12.5" rx="3" fill="#1e3a8a" />
+  <!-- Main Button Body -->
+  <rect x="1.5" y="1.2" width="13" height="12" rx="3" fill="url(#blueGrad)" stroke="#60a5fa" stroke-width="0.6" filter="url(#btnShadow)" />
+  <!-- White Plus Sign -->
+  <line x1="8" y1="4.2" x2="8" y2="10.2" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="5" y1="7.2" x2="11" y2="7.2" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+</svg>

@@ -15,7 +15,6 @@ export class SelectedFileTreeItem extends vscode.TreeItem {
     this.description = parentDir === '.' ? '' : parentDir;
     this.tooltip = fullRelativePath;
     this.contextValue = 'selectedFile';
-    this.iconPath = vscode.ThemeIcon.File;
 
     this.command = {
       command: 'vscode.open',

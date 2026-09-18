@@ -94,7 +94,10 @@
         "command": "ctxcopy.removeFileFromSelection",
         "title": "Remove",
         "category": "CtxCopy",
-        "icon": "$(close)"
+        "icon": {
+          "light": "./media/remove-btn.svg",
+          "dark": "./media/remove-btn.svg"
+        }
       },
       {
         "command": "ctxcopy.copyFileDirect",
@@ -106,7 +109,10 @@
         "command": "ctxcopy.addFileToSelection",
         "title": "Add",
         "category": "CtxCopy",
-        "icon": "$(add)"
+        "icon": {
+          "light": "./media/add-btn.svg",
+          "dark": "./media/add-btn.svg"
+        }
       },
       {
         "command": "ctxcopy.toggleWorkspaceItem",
@@ -117,13 +123,19 @@
         "command": "ctxcopy.addFolderToSelection",
         "title": "Add Folder",
         "category": "CtxCopy",
-        "icon": "$(add)"
+        "icon": {
+          "light": "./media/add-btn.svg",
+          "dark": "./media/add-btn.svg"
+        }
       },
       {
         "command": "ctxcopy.removeFolderFromSelection",
         "title": "Remove Folder",
         "category": "CtxCopy",
-        "icon": "$(close)"
+        "icon": {
+          "light": "./media/remove-btn.svg",
+          "dark": "./media/remove-btn.svg"
+        }
       },
       {
         "command": "ctxcopy.refreshWorkspaceTree",
@@ -169,26 +181,22 @@
         {
           "command": "ctxcopy.addFileToSelection",
           "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceFileUnselected",
-          "group": "inline@1",
-          "icon": "$(add)"
+          "group": "inline@1"
         },
         {
           "command": "ctxcopy.removeFileFromSelection",
           "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceFileSelected",
-          "group": "inline@1",
-          "icon": "$(close)"
+          "group": "inline@1"
         },
         {
           "command": "ctxcopy.addFolderToSelection",
-          "when": "view == ctxcopy.workspaceExplorerView && (viewItem == workspaceDirectoryEmpty || viewItem == workspaceDirectoryHasSelections)",
-          "group": "inline@1",
-          "icon": "$(add)"
+          "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceDirectoryEmpty",
+          "group": "inline@1"
         },
         {
           "command": "ctxcopy.removeFolderFromSelection",
           "when": "view == ctxcopy.workspaceExplorerView && viewItem == workspaceDirectoryHasSelections",
-          "group": "inline@2",
-          "icon": "$(close)"
+          "group": "inline@1"
         }
       ],
       "explorer/context": [

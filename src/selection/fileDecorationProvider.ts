@@ -14,9 +14,14 @@ export class CtxCopyFileDecorationProvider implements vscode.FileDecorationProvi
     this._disposables.push(this._onDidChangeFileDecorations);
 
     this._disposables.push(
-      this.selectionManager.onDidChangeSelection(() => {
-        // Trigger decoration refresh across all explorer items
-        this._onDidChangeFileDecorations.fire(undefined);
+      this.selectionManager.onDidChangeSelectionDetail(e => {
+        const affected = [...e.added, ...e.removed];
+        if (affected.length > 0 && affected.length <= 100) {
+          // Target only the affected files so other files do not flash or re-evaluate
+          this._onDidChangeFileDecorations.fire(affected);
+        } else {
+          this._onDidChangeFileDecorations.fire(undefined);
+        }
       })
     );
   }
