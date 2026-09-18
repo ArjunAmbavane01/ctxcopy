@@ -68,13 +68,14 @@ export class WorkspaceFileItem extends vscode.TreeItem {
 
   public updateSelection(isSelected: boolean): void {
     this.isSelected = isSelected;
-    this.description = '';
     const relPath = getRelativePath(this.fileUri);
 
     if (isSelected) {
+      this.description = '✓';
       this.contextValue = 'workspaceFileSelected';
       this.tooltip = `${relPath} (Selected in CtxCopy)`;
     } else {
+      this.description = '';
       this.contextValue = 'workspaceFileUnselected';
       this.tooltip = relPath;
     }

@@ -5,14 +5,14 @@
       <stop offset="100%" stop-color="#b91c1c" />
     </linearGradient>
     <filter id="btnShadowRed" x="-10%" y="-10%" width="120%" height="130%">
-      <feDropShadow dx="0" dy="1" stdDeviation="0.4" flood-color="#000000" flood-opacity="0.35" />
+      <feDropShadow dx="0" dy="1" stdDeviation="0.4" flood-color="#000000" flood-opacity="0.4" />
     </filter>
   </defs>
-  <!-- 3D Bevel Base -->
-  <rect x="1.5" y="2" width="13" height="12.5" rx="3" fill="#7f1d1d" />
-  <!-- Main Button Body -->
-  <rect x="1.5" y="1.2" width="13" height="12" rx="3" fill="url(#redGrad)" stroke="#f87171" stroke-width="0.6" filter="url(#btnShadowRed)" />
-  <!-- White Cross -->
-  <line x1="5.4" y1="4.6" x2="10.6" y2="9.8" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
-  <line x1="10.6" y1="4.6" x2="5.4" y2="9.8" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+  <!-- 3D Shadow Base -->
+  <rect x="0.75" y="1.5" width="14.5" height="14" rx="3.5" fill="#450a0a" />
+  <!-- Main 3D Button Body -->
+  <rect x="0.75" y="0.75" width="14.5" height="13.5" rx="3.5" fill="url(#redGrad)" stroke="#f87171" stroke-width="0.7" filter="url(#btnShadowRed)" />
+  <!-- Bold White Cross -->
+  <line x1="4.6" y1="4.1" x2="11.4" y2="10.9" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+  <line x1="11.4" y1="4.1" x2="4.6" y2="10.9" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
 </svg>

@@ -29,7 +29,6 @@ export class CtxCopyFileDecorationProvider implements vscode.FileDecorationProvi
   public provideFileDecoration(uri: vscode.Uri): vscode.ProviderResult<vscode.FileDecoration> {
     if (this.selectionManager.has(uri)) {
       return {
-        badge: '✓',
         tooltip: 'Selected in CtxCopy',
         color: new vscode.ThemeColor('charts.green')
       };

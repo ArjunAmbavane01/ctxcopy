@@ -64,7 +64,7 @@
       },
       {
         "command": "ctxcopy.toggleCurrentFile",
-        "title": "CtxCopy: Toggle Current File Selection",
+        "title": "Toggle File Selection",
         "category": "CtxCopy"
       },
       {
@@ -201,30 +201,14 @@
       ],
       "explorer/context": [
         {
-          "command": "ctxcopy.copyFileDirect",
-          "group": "7_modification@1"
-        },
-        {
           "command": "ctxcopy.toggleCurrentFile",
-          "group": "7_modification@2"
-        },
-        {
-          "command": "ctxcopy.addFileToSelection",
-          "group": "7_modification@3"
+          "group": "7_modification@1"
         }
       ],
       "editor/context": [
         {
-          "command": "ctxcopy.copyCurrentFile",
-          "group": "7_modification@1"
-        },
-        {
           "command": "ctxcopy.toggleCurrentFile",
-          "group": "7_modification@2"
-        },
-        {
-          "command": "ctxcopy.addCurrentFile",
-          "group": "7_modification@3"
+          "group": "7_modification@1"
         }
       ]
     },
