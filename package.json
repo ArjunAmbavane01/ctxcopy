@@ -3,8 +3,12 @@
   "displayName": "CtxCopy",
   "description": "Select workspace files and copy their formatted contents to clipboard for LLMs and chatbots.",
   "version": "0.1.0",
-  "publisher": "ctxcopy",
+  "publisher": "ArjunAmbavane",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArjunAmbavane01/ctxcopy"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },

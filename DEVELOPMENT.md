@@ -1,255 +1,159 @@
 # CtxCopy Development Guide
 
-This guide provides end-to-end instructions for maintaining, testing, packaging, and publishing the **CtxCopy** VS Code extension.
+A quick reference and development guide for building, testing, packaging, and releasing **CtxCopy**.
 
 ---
 
-## 1. Prerequisites
+## 1. Quick Reference: Scripts & Commands
 
-Ensure your workstation has the following tools installed:
+| Task | Command | Description |
+| :--- | :--- | :--- |
+| **Install** | `npm install` | Install all development dependencies |
+| **Run / Debug** | Press `F5` in VS Code | Launch Extension Development Host with debugger |
+| **Dev Bundle** | `npm run bundle:dev` | Bundle development build using esbuild |
+| **Type Check** | `npm run compile` | Run TypeScript compiler (`tsc`) |
+| **Watch Mode** | `npm run watch` | Compile TypeScript continuously on file changes |
+| **Lint** | `npm run lint` | Check code quality via ESLint |
+| **Integration Tests** | `npm test` | Run tests in an isolated VS Code instance |
+| **Unit Tests** | `npm run test:unit` | Run unit tests directly via Node.js |
+| **Production Build** | `npm run build` | Generate minified production bundle in `dist/` |
+| **Package VSIX** | `npm run package` | Package `ctxcopy-<version>.vsix` for release |
 
-- **Node.js**: `v18.0.0` or newer (Recommended: Current LTS, e.g. Node 20.x or 22.x)
+---
+
+## 2. Prerequisites
+
+- **Node.js**: `v18.0.0` or newer (Recommended: Node 20.x or 22.x LTS)
 - **npm**: `v9.0.0` or newer
 - **VS Code**: `v1.85.0` or newer
-- **Git**: For source control management
-
-Verify your versions:
-
-```bash
-node -v
-npm -v
-git --version
-```
+- **Git**: Installed and configured
 
 ---
 
-## 2. Installing Dependencies
+## 3. Local Development & Debugging
 
-Clone or navigate to the repository directory and run:
-
-```bash
-cd ctxcopy
-npm install
-```
-
-This installs:
-- TypeScript compiler (`tsc`)
-- Modern bundler (`esbuild`)
-- ESLint and TypeScript ESLint plugins
-- Mocha test framework
-- VS Code extension test runner (`@vscode/test-electron`)
-- Official extension packager (`@vscode/vsce`)
-
----
-
-## 3. Opening the Project in VS Code
-
-Open the workspace folder in VS Code:
-
-```bash
-code .
-```
-
-VS Code will automatically detect the `.vscode/launch.json` and `.vscode/tasks.json` configuration files included in the repository.
+1. Open this repository in VS Code:
+   ```bash
+   code .
+   ```
+2. Press **`F5`** (or open **Run and Debug** > **Run Extension**).
+3. A new **Extension Development Host** window opens with CtxCopy loaded.
+4. Test the extension features in the new window:
+   - **Activity Bar**: Click the CtxCopy icon to open the staged files list.
+   - **Shortcuts**:
+     - `Alt+C` (`Cmd+Alt+C` on macOS): Copy active file directly to clipboard.
+     - `Alt+A` (`Cmd+Alt+A` on macOS): Add or remove active file from selection.
+     - `Alt+Shift+C` (`Cmd+Alt+Shift+C` on macOS): Copy all selected files to clipboard.
+     - `Alt+Shift+X` (`Cmd+Alt+Shift+X` on macOS): Clear selection.
+   - **Context Menus**: Right-click files in Explorer to add or copy.
+5. **Breakpoints & Logs**:
+   - Set breakpoints directly inside `src/**/*.ts`.
+   - In the Extension Development Host window, run **Developer: Toggle Developer Tools** (`Ctrl+Shift+I` / `Cmd+Option+I`) to view console logs.
 
 ---
 
-## 4. Running the Extension in Extension Development Host
+## 4. Testing & Code Quality
 
-To launch and run the extension interactively:
-
-1. Press `F5` in VS Code (or navigate to the **Run and Debug** view and select **Run Extension**).
-2. VS Code runs the pre-launch task `npm: bundle:dev` to build `dist/extension.js` via `esbuild`.
-3. A new **Extension Development Host** window opens.
-4. In the Extension Development Host:
-   - Open any workspace or folder.
-   - The **CtxCopy** icon appears in the Activity Bar.
-   - Right-click any file in the Explorer to access **Add to CtxCopy** or **Copy with CtxCopy**.
-   - Use shortcuts `Ctrl+Alt+C` or `Ctrl+Alt+A`.
-
-To inspect logs or debug breakpoints:
-- Set breakpoints directly in the TypeScript files inside `src/`.
-- The Extension Development Host hits breakpoints via generated source maps.
-- Use **Developer: Toggle Developer Tools** in the Extension Development Host to inspect console logs or UI elements.
-
----
-
-## 5. Linting, Type-Checking, and Building
-
-### Type Checking (TypeScript)
-
-To run the TypeScript compiler and ensure all types adhere to strict mode:
+Run tests and linting before packaging or committing:
 
 ```bash
+# Type-check TypeScript
 npm run compile
-```
 
-To run the compiler in watch mode during development:
-
-```bash
-npm run watch
-```
-
-### Linting (ESLint)
-
-To check code quality and ensure style compliance:
-
-```bash
+# Lint TypeScript code
 npm run lint
-```
 
-### Production Build (esbuild)
+# Run fast unit tests
+npm run test:unit
 
-To produce an optimized, minified bundle in `dist/extension.js`:
-
-```bash
-npm run build
-```
-
----
-
-## 6. Running Tests
-
-The test suite covers:
-- Formatting logic and whitespace handling (`src/test/suite/formatter.test.ts`)
-- Sensitive file and credential heuristics (`src/test/suite/secrets.test.ts`)
-- Binary file detection, UTF-8 validation, and byte formatting (`src/test/suite/fileReader.test.ts`)
-- Selection state, de-duplication, and event emitters (`src/test/suite/selectionManager.test.ts`)
-
-To execute the test suite:
-
-```bash
+# Run full integration tests (launches headless VS Code)
 npm test
 ```
 
-This compiles TypeScript and launches an isolated, headless instance of VS Code via `@vscode/test-electron` to execute Mocha tests against the actual VS Code runtime.
-
 ---
 
-## 7. Packaging a `.vsix`
+## 5. Building & Packaging
 
-A `.vsix` file is the distributable archive format for VS Code extensions.
-
-To package the extension into a local `.vsix`:
+To create a distributable `.vsix` package:
 
 ```bash
 npm run package
 ```
 
-This creates a file named `ctxcopy-0.1.0.vsix` in the project root.
+This runs `vscode:prepublish` (which compiles `dist/extension.js` with `esbuild`) and produces:
+```text
+ctxcopy-<version>.vsix
+```
 
-### Testing the Packaged `.vsix` Locally
-
-You can test installing your `.vsix` in your everyday VS Code before publishing:
+### Testing the VSIX Locally
+You can test the packaged extension in your primary VS Code before releasing:
 
 ```bash
 code --install-extension ctxcopy-0.1.0.vsix
 ```
 
-Or in VS Code:
-1. Open the **Extensions** view (`Ctrl+Shift+X`).
-2. Click the **...** (Views and More Actions) menu in the top-right corner.
-3. Select **Install from VSIX...**.
-4. Choose `ctxcopy-0.1.0.vsix`.
+*(Or open Extensions view > `...` menu > **Install from VSIX...**)*.
 
 ---
 
-## 8. Creating a VS Code Marketplace Publisher
+## 6. Publishing Updates
 
-To publish extensions to the public VS Code Marketplace, you must have a registered Publisher ID.
-
-1. Navigate to the [Visual Studio Marketplace Management Portal](https://marketplace.visualstudio.com/manage).
-2. Sign in with your Microsoft or GitHub account.
-3. Click **Create publisher**.
-4. Fill in:
-   - **ID**: A unique lowercase identifier (e.g. `your-name` or `your-org`). This must match the `"publisher"` field in `package.json`.
-   - **Name**: The display name for your organization or user profile.
-5. Accept the Marketplace terms and submit.
-
----
-
-## 9. Marketplace Authentication (Personal Access Token)
-
-Publishing via the command line requires an Azure DevOps Personal Access Token (PAT):
-
-1. Go to [Azure DevOps](https://dev.azure.com) and log in with the same Microsoft account used for your Marketplace publisher.
-2. If you don't have an organization, create one (e.g. `https://dev.azure.com/{your-org}`).
-3. In the top-right corner, click **User Settings** (icon next to your profile picture) > **Personal access tokens**.
-4. Click **+ New Token**.
-5. Configure the token:
-   - **Name**: `VS Code Marketplace Publishing`
-   - **Organization**: Select **All accessible organizations**. *(Crucial: vsce requires "All accessible organizations")*
-   - **Expiration**: Select desired duration (e.g. 90 days or 1 year).
-   - **Scopes**:
-     - Under **Marketplace**, check **Acquire** and **Manage**.
-6. Click **Create** and securely copy the generated token.
-
-Log in to `vsce` on your machine:
-
-```bash
-npx vsce login <your-publisher-id>
+Your extension identifier on the Marketplace is:
+```text
+ArjunAmbavane.ctxcopy
 ```
 
-Paste your Personal Access Token when prompted. The credential is encrypted and stored locally in your OS credential store.
+### The Web Portal Way (Fast & Simple)
+
+Whenever you want to release an update:
+
+1. Update `"version"` in `package.json` (e.g. from `"0.1.0"` to `"0.1.1"`):
+   ```json
+   "version": "0.1.1"
+   ```
+2. Build and package the new `.vsix`:
+   ```bash
+   npm run build
+   npm run package
+   ```
+3. Go to the [Visual Studio Marketplace Management Portal](https://marketplace.visualstudio.com/manage).
+4. Find **CtxCopy** in your extensions list.
+5. Click the **`...`** (More Actions) menu next to CtxCopy > **Update**.
+6. Upload the newly generated `ctxcopy-0.1.1.vsix`.
+7. The Marketplace validates and rolls out the update automatically.
 
 ---
 
-## 10. Publishing the Extension
+### The CLI Way (Optional via `vsce`)
 
-Once logged in and tested:
+If you prefer publishing directly from your terminal:
 
 ```bash
-npm run build
-npx vsce publish
+# Auto-increments version in package.json, creates git commit & tag, and publishes:
+npx @vscode/vsce publish patch   # 0.1.0 -> 0.1.1
+npx @vscode/vsce publish minor   # 0.1.0 -> 0.2.0
+npx @vscode/vsce publish major   # 0.1.0 -> 1.0.0
 ```
 
-Alternatively, you can upload the `.vsix` file manually via the web interface:
-1. Go to [Marketplace Management Portal](https://marketplace.visualstudio.com/manage).
-2. Find your publisher and click **New extension > Visual Studio Code**.
-3. Drag and drop the packaged `.vsix` file.
-
-Within a few minutes, the extension will be verified and published publicly.
+*(Requires a Personal Access Token or Azure credential configured with `npx @vscode/vsce login ArjunAmbavane`).*
 
 ---
 
-## 11. Updating and Versioning the Extension
+## 7. Project Architecture
 
-Follow [Semantic Versioning](https://semver.org/):
-
-- **Patch** (`0.1.0` -> `0.1.1`): Bug fixes, non-breaking minor tweaks.
-- **Minor** (`0.1.0` -> `0.2.0`): New backward-compatible functionality (e.g. new formatting options).
-- **Major** (`0.1.0` -> `1.0.0`): Breaking architectural or behavior changes.
-
-To increment the version and publish in one command:
-
-```bash
-# For a patch release
-npx vsce publish patch
-
-# For a minor release
-npx vsce publish minor
-
-# For a major release
-npx vsce publish major
+```text
+ctxcopy/
+├── .vscode/             # VS Code launch and task configs
+├── media/               # Icons and UI assets
+├── src/
+│   ├── commands/        # Command registrations and handlers
+│   ├── formatter/       # Structured clipboard formatting
+│   ├── selection/       # Staged file selection state & Explorer decorators
+│   ├── utils/           # UTF-8 reader, binary detection, secrets heuristics
+│   ├── views/           # Activity Bar TreeDataProvider views
+│   ├── test/            # Mocha and @vscode/test-electron test suites
+│   └── extension.ts     # Extension activation entry point
+├── esbuild.js           # Fast production & dev bundler
+├── package.json         # Extension manifest, commands, menus, shortcuts
+└── tsconfig.json        # TypeScript configuration
 ```
-
-`vsce` automatically updates `package.json`, creates a Git tag, and uploads the new version to the Marketplace.
-
----
-
-## 12. Marketplace Requirements and Policies
-
-Before publishing to the official Marketplace, ensure your extension meets official requirements:
-
-1. **Manifest Fields**:
-   - `publisher`: Must match your Marketplace publisher ID.
-   - `repository`: Must link to a valid public Git repository URL.
-   - `license`: Must specify a standard SPDX license identifier (e.g. `MIT`).
-   - `icon`: Relative path to a square PNG or SVG file (e.g. `media/icon.svg`).
-2. **README**:
-   - Must contain a clear, helpful `README.md` at the project root.
-3. **No Malicious Behavior**:
-   - No hidden network calls, arbitrary remote code execution, or tracking without consent.
-   - CtxCopy operates strictly in local memory and file storage.
-4. **Bundle Size**:
-   - Extensions should remain lean. The bundled `dist/extension.js` generated by `esbuild` is under 100 KB.

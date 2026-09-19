@@ -8,5 +8,6 @@ tsconfig.json
 esbuild.js
 *.vsix
 vsc-extension-quickstart.md
+DEVELOPMENT.md
 **/*.map
 node_modules/**

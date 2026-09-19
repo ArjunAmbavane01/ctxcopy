@@ -105,45 +105,25 @@ ctxcopy/
 
 ---
 
-## Development Setup
+## Installation
 
-### Prerequisites
+### From VS Code Marketplace
 
-- Node.js 18.x or later
-- npm 9.x or later
-- VS Code 1.85.0 or later
+1. Open VS Code and press `Ctrl+Shift+X` (`Cmd+Shift+X` on macOS) to open the Extensions view.
+2. Search for **CtxCopy** (by `ArjunAmbavane`).
+3. Click **Install**.
 
-### Install & Build
-
-```bash
-npm install
-npm run build
-```
-
-### Running the Extension Locally
-
-1. Open this repository in VS Code:
-   ```bash
-   code .
-   ```
-2. Press `F5` (or go to **Run and Debug** and choose **Run Extension**).
-3. A new **Extension Development Host** window will open with CtxCopy active.
-
-### Running Tests
+Or install from the command line:
 
 ```bash
-npm test
+code --install-extension ArjunAmbavane.ctxcopy
 ```
 
-### Packaging
+---
 
-To build a `.vsix` package locally:
+## Development
 
-```bash
-npm run package
-```
-
-For full release, publisher account setup, and publishing instructions, refer to [DEVELOPMENT.md](./DEVELOPMENT.md).
+For instructions on running from source, building, testing, packaging, and publishing updates, refer to [DEVELOPMENT.md](./DEVELOPMENT.md).
 
 ---
 
